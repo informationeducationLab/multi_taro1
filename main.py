@@ -264,20 +264,20 @@ def lr():
     st.title("単回帰分析による予測")
     df = load_full_data()
 
-    st.sidebar.markdown("## まずはタイプ 1から！")
+    st.sidebar.markdown("## まずは男女混合データから！")
 
     # sidebar でグラフを選択
-    df_type = st.sidebar.radio("", ("タイプ 1", "タイプ 2", "タイプ 3"))
+    df_type = st.sidebar.radio("", ("男女混合データ", "男子のみデータ", "高3男子のみデータ"))
 
-    # タイプ 1; フルデータ
-    if df_type == "タイプ 1":
+    # 男女混合データ; フルデータ
+    if df_type == "男女混合データ":
         filtered_df = load_num_data()
-    # タイプ 2: 女子のみのデータ
-    elif df_type == "タイプ 2":
-        filtered_df = d.load_filtered_data(df, "女子")
-    # タイプ 3: 高1女子のみのデータ
+    # 男子のみデータ
+    elif df_type == "男子のみデータ":
+        filtered_df = d.load_filtered_data(df, "男子")
+    # 高3男子のみデータ
     else:
-        filtered_df = d.load_filtered_data(df, "高1女子")
+        filtered_df = d.load_filtered_data(df, "高3男子")
 
     # 変数を取得してから、回帰したい
     with st.form("get_lr_data"):
@@ -344,20 +344,20 @@ def multi_lr():
     st.title("重回帰分析による予測")
     df = load_full_data()
 
-    st.sidebar.markdown("## まずはタイプ 1から！")
+    st.sidebar.markdown("## まずは男女混合データから！")
 
     # sidebar でグラフを選択
-    df_type = st.sidebar.radio("", ("タイプ 1", "タイプ 2", "タイプ 3"))
+    df_type = st.sidebar.radio("", ("男女混合データ", "男子のみデータ", "高3男子のみデータ"))
 
-    # タイプ 1; フルデータ
-    if df_type == "タイプ 1":
+    # 男女混合データ; フルデータ
+    if df_type == "男女混合データ":
         filtered_df = load_num_data()
-    # タイプ 2: 女子のみのデータ
-    elif df_type == "タイプ 2":
-        filtered_df = d.load_filtered_data(df, "女子")
-    # タイプ 3: 高1女子のみのデータ
+    # 男子のみデータ: 
+    elif df_type == "男子のみデータ":
+        filtered_df = d.load_filtered_data(df, "男子")
+    # 高3男子のみデータ:
     else:
-        filtered_df = d.load_filtered_data(df, "高1女子")
+        filtered_df = d.load_filtered_data(df, "高3男子")
 
     # 変数を取得してから、回帰したい
     with st.form("get_lr_data"):
@@ -428,7 +428,7 @@ def multi_lr():
                     ans = ans[:-1] + "- " + str(round(abs(intercept), 3))
                 st.markdown(ans)
 
-                st.markdown("花子の他の測定値は以下の通り")
+                st.markdown("太郎の他の測定値は以下の通り")
                 st.table(target_df)
 
                 st.markdown("上記の式に、データを当てはめると....")
