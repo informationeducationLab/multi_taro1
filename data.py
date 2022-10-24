@@ -40,6 +40,12 @@ def load_filtered_data(data, genre_filter):
     elif genre_filter == "高1女子":
         filtered_data = data[data["性別"].isin(["女"])]
         filtered_data = filtered_data[filtered_data["学年"].isin(["高1"])]
+    elif genre_filter == "男子":
+        filtered_data = data[data["性別"].isin(["男"])]
+    elif genre_filter == "高3男子":
+        filtered_data = data[data["性別"].isin(["男"])]
+        filtered_data = filtered_data[filtered_data["学年"].isin(["高3"])]
+    
     else:
         filtered_data = data
 
