@@ -7,7 +7,7 @@
 ## What's new
 - write log on gsheet
     - [ref](https://github.com/streamlit/example-app-bug-report)
-    - [gsheet](https://docs.google.com/spreadsheets/d/1b0ODG_mkvXdOwq8uEnQfyCi2PYZxGexyUbV6q5w-chc/edit#gid=0)
+    - [gsheet](https://docs.google.com/spreadsheets/d/1NurGwkACx0ftrrCapdF-UnZJZq2Jm3TNiGlP5_tcbCE/edit#gid=0)
 
 - able to use multiregression
 
