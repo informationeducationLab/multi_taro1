@@ -1,3 +1,5 @@
+st.write("DEPLOY CHECK: 2025-12-29 10:10 main.py loaded")
+
 import datetime
 
 import google_auth_httplib2
