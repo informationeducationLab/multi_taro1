@@ -61,8 +61,6 @@ def connect_to_gsheet():
 
     return gsheet_connector
 
-if gsheet_connector is not None:
-    add_row_to_gsheet(gsheet_connector, row_data)
 
 def add_row_to_gsheet(gsheet_connector, row):
     gsheet_connector.values().append(
@@ -188,29 +186,28 @@ def vis():
         st.plotly_chart(fig, use_container_width=True)
 
         # ログを記録
-        add_row_to_gsheet(
-            gsheet_connector,
-            [
+        # ログを記録（Sheets接続できた時だけ）
+        if gsheet_connector is not None:
+            add_row_to_gsheet(
+                gsheet_connector,
                 [
-                    datetime.datetime.now(
-                        datetime.timezone(datetime.timedelta(hours=9))
-                    ).strftime("%Y-%m-%d %H:%M:%S"),
-                    st.session_state.username,
-                    "散布図",
-                    x_label,
-                    y_label,
-                    coloring,
-                ]
-            ],
-        )
+                    [
+                        datetime.datetime.now(
+                            datetime.timezone(datetime.timedelta(hours=9))
+                        ).strftime("%Y-%m-%d %H:%M:%S"),
+                        st.session_state.username,
+                        "散布図",
+                        x_label,
+                        y_label,
+                        coloring,
+                    ]
+                ],
+            )
+
 
     # ヒストグラム
-    elif graph == "ヒストグラム":
-        hist_val = st.selectbox("変数を選択", X_COLS)
-        fig = px.histogram(score, x=hist_val)
-        st.plotly_chart(fig, use_container_width=True)
-
-        # ログを記録
+    # ログを記録（Sheets接続できた時だけ）
+    if gsheet_connector is not None:
         add_row_to_gsheet(
             gsheet_connector,
             [
@@ -226,6 +223,7 @@ def vis():
                 ]
             ],
         )
+    
 
     # 箱ひげ図
     elif graph == "箱ひげ図":
@@ -244,21 +242,24 @@ def vis():
             st.plotly_chart(fig, use_container_width=True)
 
         # ログを記録
-        add_row_to_gsheet(
-            gsheet_connector,
-            [
+       # ログを記録（Sheets接続できた時だけ）
+        if gsheet_connector is not None:
+            add_row_to_gsheet(
+                gsheet_connector,
                 [
-                    datetime.datetime.now(
-                        datetime.timezone(datetime.timedelta(hours=9))
-                    ).strftime("%Y-%m-%d %H:%M:%S"),
-                    st.session_state.username,
-                    "箱ひげ図",
-                    box_val_y,
-                    "-",
-                    "-",
-                ]
-            ],
-        )
+                    [
+                        datetime.datetime.now(
+                            datetime.timezone(datetime.timedelta(hours=9))
+                        ).strftime("%Y-%m-%d %H:%M:%S"),
+                        st.session_state.username,
+                        "箱ひげ図",
+                        box_val_y,
+                        "-",
+                        "-",
+                    ]
+                ],
+            )
+        
 
 
 # ---------------- 単回帰分析 ----------------------------------
@@ -314,21 +315,24 @@ def lr():
             y_pred = model_lr.predict(X_test)
 
             # ログを記録
-            add_row_to_gsheet(
-                gsheet_connector,
-                [
+            # ログを記録（Sheets接続できた時だけ）
+            if gsheet_connector is not None:
+                add_row_to_gsheet(
+                    gsheet_connector,
                     [
-                        datetime.datetime.now(
-                            datetime.timezone(datetime.timedelta(hours=9))
-                        ).strftime("%Y-%m-%d %H:%M:%S"),
-                        st.session_state.username,
-                        "単回帰分析",
-                        y_label,
-                        x_label,
-                        df_type,
-                    ]
-                ],
-            )
+                        [
+                            datetime.datetime.now(
+                                datetime.timezone(datetime.timedelta(hours=9))
+                            ).strftime("%Y-%m-%d %H:%M:%S"),
+                            st.session_state.username,
+                            "単回帰分析",
+                            y_label,
+                            x_label,
+                            df_type,
+                        ]
+                    ],
+                )
+
 
             # グラフの描画
             fig = px.scatter(
@@ -399,21 +403,24 @@ def multi_lr():
                 y_pred = model_lr.predict(X_test)
 
                 # ログを記録
-                add_row_to_gsheet(
-                    gsheet_connector,
-                    [
+                # ログを記録（Sheets接続できた時だけ）
+                if gsheet_connector is not None:
+                    add_row_to_gsheet(
+                        gsheet_connector,
                         [
-                            datetime.datetime.now(
-                                datetime.timezone(datetime.timedelta(hours=9))
-                            ).strftime("%Y-%m-%d %H:%M:%S"),
-                            st.session_state.username,
-                            "重回帰分析",
-                            y_label,
-                            "_".join(x_labels),
-                            df_type,
-                        ]
-                    ],
-                )
+                            [
+                                datetime.datetime.now(
+                                    datetime.timezone(datetime.timedelta(hours=9))
+                                ).strftime("%Y-%m-%d %H:%M:%S"),
+                                st.session_state.username,
+                                "重回帰分析",
+                                y_label,
+                                "_".join(x_labels),
+                                df_type,
+                            ]
+                        ],
+                    )
+
 
                 # 結果の表示
                 coef = model_lr.coef_[0]
