@@ -61,6 +61,8 @@ def connect_to_gsheet():
 
     return gsheet_connector
 
+if gsheet_connector is not None:
+    add_row_to_gsheet(gsheet_connector, row_data)
 
 def add_row_to_gsheet(gsheet_connector, row):
     gsheet_connector.values().append(
@@ -462,6 +464,11 @@ def multi_lr():
                 # st.plotly_chart(fig, use_container_width=True)
 
 
-#### main contents
-gsheet_connector = connect_to_gsheet()
+# --- 起動時：Google Sheetsは「使えたら使う」 ---
+try:
+    gsheet_connector = connect_to_gsheet()
+except Exception:
+    gsheet_connector = None
+
 main()
+
