@@ -148,70 +148,57 @@ def vis():
     full_data = load_full_data()
 
     st.sidebar.markdown("## いろんなグラフを試してみよう")
-
-    # sidebar でグラフを選択
     graph = st.sidebar.radio("グラフの種類", ("散布図", "ヒストグラム", "箱ひげ図"))
 
+    # -------- 散布図 --------
     if graph == "散布図":
         left, right = st.columns(2)
 
-        with left:  # 散布図の表示
+        with left:
             x_label = st.selectbox("横軸を選択", X_COLS)
             y_label = st.selectbox("縦軸を選択", X_COLS)
 
-        with right:  # 色分けオプション
+        with right:
             coloring = st.radio("グラフの色分け", ("なし", "学年", "性別"))
 
         if coloring == "学年":
             fig = px.scatter(full_data, x=x_label, y=y_label, color="学年")
         elif coloring == "性別":
-            fig = px.scatter(
-                full_data,
-                x=x_label,
-                y=y_label,
-                color="性別",
-            )
+            fig = px.scatter(full_data, x=x_label, y=y_label, color="性別")
         else:
-            fig = px.scatter(
-                full_data,
-                x=x_label,
-                y=y_label,
-            )
+            fig = px.scatter(full_data, x=x_label, y=y_label)
 
-        # 相関係数算出
         cor = d.get_corrcoef(score, x_label, y_label)
         st.write("相関係数：" + str(cor))
-
-        # グラフ描画
         st.plotly_chart(fig, use_container_width=True)
 
-        # ログを記録
-        # ログを記録（Sheets接続できた時だけ）
+        # ログ（Sheets接続できた時だけ）
         if gsheet_connector is not None:
             add_row_to_gsheet(
                 gsheet_connector,
-                [
-                    [
-                        datetime.datetime.now(
-                            datetime.timezone(datetime.timedelta(hours=9))
-                        ).strftime("%Y-%m-%d %H:%M:%S"),
-                        st.session_state.username,
-                        "散布図",
-                        x_label,
-                        y_label,
-                        coloring,
-                    ]
-                ],
+                [[
+                    datetime.datetime.now(
+                        datetime.timezone(datetime.timedelta(hours=9))
+                    ).strftime("%Y-%m-%d %H:%M:%S"),
+                    st.session_state.username,
+                    "散布図",
+                    x_label,
+                    y_label,
+                    coloring,
+                ]],
             )
 
+    # -------- ヒストグラム --------
+    elif graph == "ヒストグラム":
+        hist_val = st.selectbox("変数を選択", X_COLS)
+        fig = px.histogram(score, x=hist_val)
+        st.plotly_chart(fig, use_container_width=True)
 
-    # ヒストグラム
-    # ログを記録（Sheets接続できた時だけ）
-    if gsheet_connector is not None:
-        add_row_to_gsheet(
-            gsheet_connector,
-            [
-                [
+        # ログ（Sheets接続できた時だけ）
+        if gsheet_connector is not None:
+            add_row_to_gsheet(
+                gsheet_connector,
+                [[
                     datetime.datetime.now(
                         datetime.timezone(datetime.timedelta(hours=9))
                     ).strftime("%Y-%m-%d %H:%M:%S"),
@@ -220,46 +207,36 @@ def vis():
                     hist_val,
                     "-",
                     "-",
-                ]
-            ],
-        )
-    
+                ]],
+            )
 
-    # 箱ひげ図
-    elif graph == "箱ひげ図":
+    # -------- 箱ひげ図 --------
+    else:  # graph == "箱ひげ図"
         box_val_y = st.selectbox("箱ひげ図にする変数を選択", X_COLS)
 
         left, right = st.columns(2)
-        with left:  # 散布図の表示
-            fig = px.box(
-                full_data,
-                x="学年",
-                y=box_val_y,
-            )
+        with left:
+            fig = px.box(full_data, x="学年", y=box_val_y)
             st.plotly_chart(fig, use_container_width=True)
         with right:
             fig = px.box(full_data, x="性別", y=box_val_y)
             st.plotly_chart(fig, use_container_width=True)
 
-        # ログを記録
-       # ログを記録（Sheets接続できた時だけ）
+        # ログ（Sheets接続できた時だけ）
         if gsheet_connector is not None:
             add_row_to_gsheet(
                 gsheet_connector,
-                [
-                    [
-                        datetime.datetime.now(
-                            datetime.timezone(datetime.timedelta(hours=9))
-                        ).strftime("%Y-%m-%d %H:%M:%S"),
-                        st.session_state.username,
-                        "箱ひげ図",
-                        box_val_y,
-                        "-",
-                        "-",
-                    ]
-                ],
+                [[
+                    datetime.datetime.now(
+                        datetime.timezone(datetime.timedelta(hours=9))
+                    ).strftime("%Y-%m-%d %H:%M:%S"),
+                    st.session_state.username,
+                    "箱ひげ図",
+                    box_val_y,
+                    "-",
+                    "-",
+                ]],
             )
-        
 
 
 # ---------------- 単回帰分析 ----------------------------------
@@ -472,10 +449,13 @@ def multi_lr():
 
 
 # --- 起動時：Google Sheetsは「使えたら使う」 ---
+gsheet_connector = None
+
 try:
     gsheet_connector = connect_to_gsheet()
 except Exception:
     gsheet_connector = None
 
 main()
+
 
